@@ -21,7 +21,7 @@ class Root(Tk):
         self.label.pack(side="top", fill="x")
 
         self.text = HighLightText(self)
-        self.text.pack(fil="both", expand=1)
+        self.text.pack(fill="both", expand=1)
         self.text.insert(0.0, TEXT)
 
         for i in URL:
