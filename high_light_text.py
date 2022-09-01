@@ -67,29 +67,15 @@ class HighLightText(ScrolledText):
 
 if __name__ == '__main__':
     root = Tk()
-    add = HighLightText(root)
-    add.pack(fill="both", expand=1)
-
-    top = Toplevel(root)
-    top.state("withdraw")
-    top.protocol("WM_DELETE_WINDOW", lambda: top.state("withdraw"))
-    top.wm_attributes("-topmost", 1)
-
-    label = Label(top, text="info")
-    label.pack(fill="both", expand=1)
-
-    img_ = PhotoImage(file=os.path.join(os.getcwd(), "python_img.png"))
 
 
     def change(event):
         top.state("normal")
         tag = event.widget.current_tag
         top.title(tag)
-
         label.config(image="")
         r, g, b = [random.randint(1, 255) for i in range(3)]
         label["bg"] = add.colorHex((r, g, b))
-
         label["text"] = f"{tag} = {datetime.datetime.now()}"
 
 
@@ -97,7 +83,6 @@ if __name__ == '__main__':
         top.state("normal")
         tag = event.widget.current_tag
         top.title(tag)
-
         r, g, b = [random.randint(1, 255) for i in range(3)]
         label.config(image="")
         label["bg"] = add.colorHex((r, g, b))
@@ -121,6 +106,19 @@ if __name__ == '__main__':
         label.config(text=f"{tag} : {type(event.widget).__name__=}")
 
 
+    add = HighLightText(root)
+    add.pack(fill="both", expand=1)
+
+    top = Toplevel(root)
+    top.state("withdraw")
+    top.protocol("WM_DELETE_WINDOW", lambda: top.state("withdraw"))
+    top.wm_attributes("-topmost", 1)
+
+    label = Label(top, text="info")
+    label.pack(fill="both", expand=1)
+
+    img_ = PhotoImage(file=os.path.join(os.getcwd(), "python_img.png"))
+
     add.command("today", "<Button-1>", func=change, config=dict(font=Font(underline=1), background="gray"))
 
     add.command("date", "<Button-1>", func=date, config=dict(font=Font(underline=1), foreground="green"))
@@ -131,5 +129,5 @@ if __name__ == '__main__':
     add.command("widget", "<Button-1>", func=my_widget, config={"background": "red"})
 
     add.insert(0.0, "date? today ? \nthis is a python image \nwhat is widget name?")
-    # add.insert(5.0, "\ntoday ?\nthis is python image")
+
     root.mainloop()
