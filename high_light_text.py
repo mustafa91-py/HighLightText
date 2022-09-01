@@ -1,5 +1,6 @@
 import datetime
 import os.path
+import tkinter
 from tkinter import *
 from tkinter.scrolledtext import ScrolledText
 from tkinter.font import Font
@@ -18,14 +19,14 @@ class HighLightText(ScrolledText):
         self.words_widget_sequence = {}
         self.words_config = {}
         self.current_tag = None
-        self.bind("<Motion>", self.track)
+        self.bind("<Motion>", self.__track)
 
     def command(self, tag, sequence=None, func=None, config: dict = None):
         self.words_widget_func[tag] = func
         self.words_widget_sequence[tag] = sequence
         self.words_config[tag] = config
 
-    def items_(self, item="=", config: dict = None):
+    def __items(self, item="=", config: dict = None):
         import re
         data = self.get(0.0, "end")
         self.dict_data = {k + 1: v for k, v in enumerate(str(data).split("\n"))}
@@ -46,9 +47,9 @@ class HighLightText(ScrolledText):
                 cnf = __config
             else:
                 cnf = {}
-            self.items_(k, config=cnf)
+            self.__items(k, config=cnf)
 
-    def track(self, event):
+    def __track(self, event):
         self.__capsule()
         index = event.widget.index(f"@{event.x},{event.y}")
         for k, v in self.words_coord.items():
@@ -75,7 +76,7 @@ if __name__ == '__main__':
         top.title(tag)
         label.config(image="")
         r, g, b = [random.randint(1, 255) for i in range(3)]
-        label["bg"] = add.colorHex((r, g, b))
+        label["bg"] = highlight_text.colorHex((r, g, b))
         label["text"] = f"{tag} = {datetime.datetime.now()}"
 
 
@@ -85,15 +86,21 @@ if __name__ == '__main__':
         top.title(tag)
         r, g, b = [random.randint(1, 255) for i in range(3)]
         label.config(image="")
-        label["bg"] = add.colorHex((r, g, b))
+        label["bg"] = highlight_text.colorHex((r, g, b))
         label["text"] = f"{tag} = {datetime.date.today()}"
+
+
+    try:
+        img_ = PhotoImage(file=os.path.join(os.getcwd(), "python_img.png"))
+    except tkinter.TclError:
+        img_ = None
 
 
     def open_python(event):
         tag = event.widget.current_tag
         top.title(tag)
         top.state("normal")
-        label.config(image=img_)
+        label.config(image=img_,text="image not found")
 
 
     def my_widget(event):
@@ -106,8 +113,8 @@ if __name__ == '__main__':
         label.config(text=f"{tag} : {type(event.widget).__name__=}")
 
 
-    add = HighLightText(root)
-    add.pack(fill="both", expand=1)
+    highlight_text = HighLightText(root)
+    highlight_text.pack(fill="both", expand=1)
 
     top = Toplevel(root)
     top.state("withdraw")
@@ -117,17 +124,15 @@ if __name__ == '__main__':
     label = Label(top, text="info")
     label.pack(fill="both", expand=1)
 
-    img_ = PhotoImage(file=os.path.join(os.getcwd(), "python_img.png"))
+    highlight_text.command("today", "<Button-1>", func=change, config=dict(font=Font(underline=1), background="gray"))
 
-    add.command("today", "<Button-1>", func=change, config=dict(font=Font(underline=1), background="gray"))
+    highlight_text.command("date", "<Button-1>", func=date, config=dict(font=Font(underline=1), foreground="green"))
 
-    add.command("date", "<Button-1>", func=date, config=dict(font=Font(underline=1), foreground="green"))
+    highlight_text.command("python", "<Button-1>", func=open_python,
+                           config=dict(font=Font(underline=1, family="Arial", weight="bold")))
 
-    add.command("python", "<Button-1>", func=open_python,
-                config=dict(font=Font(underline=1, family="Arial", weight="bold")))
+    highlight_text.command("widget", "<Button-1>", func=my_widget, config={"background": "red"})
 
-    add.command("widget", "<Button-1>", func=my_widget, config={"background": "red"})
-
-    add.insert(0.0, "date? today ? \nthis is a python image \nwhat is widget name?")
+    highlight_text.insert(0.0, "date? today ? \nthis is a python image \nwhat is widget name?")
 
     root.mainloop()
