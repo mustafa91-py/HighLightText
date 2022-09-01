@@ -1,10 +1,5 @@
-import datetime
-import os.path
-import tkinter
 from tkinter import *
 from tkinter.scrolledtext import ScrolledText
-from tkinter.font import Font
-import random
 
 
 class HighLightText(ScrolledText):
@@ -67,6 +62,12 @@ class HighLightText(ScrolledText):
 
 
 if __name__ == '__main__':
+    import os.path
+    from tkinter.font import Font
+    import tkinter
+    import random
+    import datetime
+
     root = Tk()
 
 
