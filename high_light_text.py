@@ -9,7 +9,6 @@ class HighLightText(ScrolledText):
         self.dict_data = {}
         self.colorHex = lambda rgb: "#%02x%02x%02x" % rgb
         self.words_coord = {}
-        self.words_widget = {}
         self.words_widget_func = {}
         self.words_widget_sequence = {}
         self.words_config = {}
@@ -29,8 +28,6 @@ class HighLightText(ScrolledText):
             for i in re.finditer(re.escape(item), v):
                 coord_ = f"{k}.{i.start()}", f"{k}.{i.end()}"
                 self.words_coord[coord_] = item
-                if item not in self.words_widget:
-                    self.words_widget[item] = Button()
                 self.tag_add(item, f"{k}.{i.start()}", f"{k}.{i.end()}")
                 self.tag_config(item, **config)
 
