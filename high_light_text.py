@@ -12,20 +12,29 @@ class HighLightText(ScrolledText):
         self.words_widget_func = {}
         self.words_widget_sequence = {}
         self.words_config = {}
+        self.words_ignore_case = {}
         self.current_tag = None
         self.bind("<Motion>", self.__track)
 
-    def command(self, tag, sequence=None, func=None, config: dict = None):
+    def command(self, tag, sequence=None, func=None, config: dict = None, ignore_case=False):
         self.words_widget_func[tag] = func
         self.words_widget_sequence[tag] = sequence
         self.words_config[tag] = config
+        self.words_ignore_case[tag] = ignore_case
 
     def __items(self, item="=", config: dict = None):
         import re
         data = self.get(0.0, "end")
         self.dict_data = {k + 1: v for k, v in enumerate(str(data).split("\n"))}
+
+        flag = self.words_ignore_case.get(item)
+        if flag:
+            flag = re.IGNORECASE
+        else:
+            flag = 0
+
         for k, v in self.dict_data.items():
-            for i in re.finditer(re.escape(item), v):
+            for i in re.finditer(re.escape(item), v,flags=flag):
                 coord_ = f"{k}.{i.start()}", f"{k}.{i.end()}"
                 self.words_coord[coord_] = item
                 self.tag_add(item, f"{k}.{i.start()}", f"{k}.{i.end()}")
@@ -98,7 +107,7 @@ if __name__ == '__main__':
         tag = event.widget.current_tag
         top.title(tag)
         top.state("normal")
-        label.config(image=img_,text="image not found")
+        label.config(image=img_, text="image not found")
 
 
     def my_widget(event):
